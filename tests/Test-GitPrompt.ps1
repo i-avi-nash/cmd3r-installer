@@ -1,9 +1,13 @@
 [CmdletBinding()]
-param([string]$Posh = (Join-Path $env:LOCALAPPDATA 'Programs\cmd3r\bin\oh-my-posh.exe'))
+param([string]$Posh)
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $root = Split-Path $PSScriptRoot -Parent
-$repo = Join-Path $env:TEMP ('cmd3r-git-test-' + [guid]::NewGuid().ToString('N'))
+if (!$Posh) {
+    $Posh = @((Join-Path $env:LOCALAPPDATA 'Programs\cmd3r\bin\oh-my-posh.exe'), (Join-Path $env:USERPROFILE 'AppData\Local\Programs\cmd3r\bin\oh-my-posh.exe')) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+}
+if (!$Posh) { throw 'oh-my-posh.exe is required for Git prompt tests. Pass -Posh with its path.' }
+$repo = Join-Path $PSScriptRoot ('.work\git-test-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($repo) | Out-Null
 function Assert($Condition,[string]$Message) { if (!$Condition) { throw $Message } }
 function Git {

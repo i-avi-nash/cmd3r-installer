@@ -1,249 +1,125 @@
 # cmd3r
 
-My personal Windows Terminal and PowerShell setup, installed with one command.
-The setup snapshot is public at `i-avi-nash/cmd3r-installer`; no GitHub sign-in
-or GitHub CLI is needed. The development repository remains private.
+A reproducible Windows Terminal and PowerShell setup: a framed prompt, readable light and dark themes, saved history, fuzzy search, and useful command-line tools. Installation starts with one command and needs no GitHub account.
 
-## Install on a new PC
+## Install from any Windows PC
 
-Run this one line in PowerShell or Command Prompt on 64-bit Windows 10/11:
+Run this in **PowerShell or Command Prompt** on 64-bit Windows 10 (build 19041 or newer) or Windows 11:
 
 ```powershell
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "Invoke-RestMethod 'https://raw.githubusercontent.com/i-avi-nash/cmd3r-installer/main/bootstrap.ps1' | Invoke-Expression"
 ```
 
-Windows Package Manager (`winget`, from Microsoft's App Installer) is required
-only when Git is missing. Windows 10 build 19041 or later is required.
-PowerShell's MSI installs into Program Files and may show a Windows administrator
-approval prompt. Terminal, fonts, and configuration are installed for your user.
-Git installers may also request administrator approval.
-PowerShell uses the native x64 or ARM64 MSI; Windows Terminal includes both
-architectures. On Windows 11 ARM64, the smaller productivity tools use x64 emulation.
+The command fetches the [public installer snapshot](https://github.com/i-avi-nash/cmd3r-installer). It does not need GitHub CLI or GitHub credentials. Review the bootstrap at that URL before running it if you prefer. Internet access is needed for this path; see [Offline installation](#offline-installation) for an air-gapped PC.
 
-## Install from a clone
+Setup first downloads and verifies the latest stable PowerShell MSI and Windows Terminal offline kit, then installs the prompt, tools, fonts, and profiles. PowerShell may request administrator approval. If Git for Windows is absent, setup uses `winget` to install it; App Installer must be available for that case. The setup asks separately whether to add NVM for Windows and npkill. Press **Enter** to skip either.
 
-In a normal Command Prompt, run:
+Open a new Windows Terminal tab after setup. The default entry is **PowerShell (cmd3r)**, using the installed PowerShell 7. The generated **PowerShell** entry also points to that executable and receives the theme. Your existing explicit font choices are preserved.
 
-```cmd
-cd /d D:\Avinash\cmder
-Install.cmd
-```
+## What you get
 
-`Install.cmd` starts Windows PowerShell internally, so PowerShell 7 does not
-need to be installed first. Arguments such as `-Offline`, `-CacheRoot`, and
-`-NoAnimation` are forwarded, and the setup exit code is returned to CMD.
-Use Command Prompt opened from Start when updating Terminal; a CMD tab inside
-Windows Terminal still keeps Terminal running.
+| Area | Behavior |
+| --- | --- |
+| Prompt | Oh My Posh with a thin framed header, current folder link, Git branch and local change counts, clock, and a simple `>` input marker. |
+| Themes | Warm light and near-black dark modes with burgundy accents: `cmd3r theme light` or `cmd3r theme dark`. |
+| Font | Geist Mono Nerd Font is installed and used as the initial profile choice. Change the font in **Windows Terminal → Settings → PowerShell → Appearance**; updates preserve your choice. |
+| History | Saved commands, suggestions while typing, list view, and fuzzy search. |
+| Tools | `oh-my-posh`, `fzf`, `rg`, `fd`, `bat`, `zoxide`, `lazygit`, and `jq`. |
+| Optional Node tools | A verified, cached NVM for Windows installer and an opt-in npkill installation. |
 
-In PowerShell, run:
+The folder path supports **Ctrl+click** to open Explorer. The Git section shows `+` added, `~` modified, `-` deleted, `?` untracked, and `!` conflicted counts; staged files and stashes have separate indicators. Cherry-pick, merge, rebase, and revert states appear when active. Git status is local; rendering the prompt does not fetch from the network.
 
-```powershell
-.\Install.cmd
-```
+The border uses terminal box-drawing characters and compact `+` junctions. Windows Terminal scales stroke thickness with font size; the artwork cannot use an independent font or fixed one-pixel stroke.
 
-Or:
+## Shortcuts and commands
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -SkipLaunch
-```
+| Key or command | Action |
+| --- | --- |
+| `Ctrl+Shift+B` | Copy the current Git branch name. Outside a repository or on detached HEAD, leave the clipboard unchanged. |
+| `Ctrl+R` | Fuzzy search saved commands and insert the selection. |
+| `Alt+F` | Pick a file and insert its quoted path. |
+| `F2` | Switch between inline and list history suggestions. |
+| `Tab` | Completion menu. |
+| `cmd3r theme light` / `cmd3r theme dark` | Save and apply the selected theme. |
+| `cmd3r doctor` | Check the installed tools, prompt, font, and Terminal settings. |
+| `cmd3r update` | Download the current public installer snapshot and rerun setup. |
+| `terminal-help` or `cmd3r help` | Show shortcuts and helper commands. |
+
+The shell also provides `z`, `zi`, `ff`, `cdf`, `gs`, `gl`, `gd`, `lg`, `ll`, `..`, and `...`. Search tools run only when used; profile startup does not perform downloads or update checks.
 
 ## Optional Node tools
 
-Setup asks separately whether to install **NVM for Windows** and **npkill**.
-Press Enter to skip either. Existing NVM installations are preserved, including
-their Node versions. NVM uses the official architecture-specific offline EXE,
-verified against its GitHub release SHA256. Interactive installs open its wizard
-so you can review migration choices for an existing Node installation.
+**NVM for Windows** manages multiple Node.js versions. If it is already installed, setup keeps the existing installation and versions. A new installation uses the official architecture-specific setup EXE, checked against the release SHA-256 digest. Its wizard lets you review what happens to an existing Node installation. Installing NVM alone does **not** install or activate Node.js.
 
-npkill requires an active Node/npm runtime. It is installed in cmd3r's own npm
-prefix and exposed as `npkill`; setup never launches its cleanup screen or deletes
-project folders. Installing NVM alone does not install a Node runtime. If Node is
-missing, activate a version with NVM before selecting npkill on a subsequent run.
+**npkill** helps you review `node_modules` folders and choose which to remove. Setup installs the command in cmd3r's own tool directory and never runs a cleanup or deletes a project folder. It requires active Node.js and npm. If you install NVM on a new PC, activate Node first and select npkill on a later setup run.
 
-Explicit choices also work from CMD and the downloaded bootstrap:
+For unattended or repeat runs, choose explicitly:
 
 ```cmd
-Install.cmd -NvmWindows Yes -Npkill No
 Install.cmd -NonInteractive -NvmWindows No -Npkill Yes
 ```
 
-`-NonInteractive` skips unanswered optional choices. A new NVM installation runs
-silently only when no existing Node is detected; migration requires an interactive
-run. Cancellation/failure stops setup with a diagnostic log and a rerun instruction.
+`-NvmWindows` and `-Npkill` accept `Ask`, `Yes`, or `No`. Unanswered choices are skipped in noninteractive runs. A new NVM installation runs silently only if no existing Node is detected; a migration requires an interactive run.
 
-To prepare offline media, run online on a PC with Node/npm, then copy the source
-folder and the entire cache to the offline PC of the same architecture:
+## Install from a local checkout
+
+In Command Prompt, from the folder containing the installer:
 
 ```cmd
-Install.cmd -StageOnly -CacheRoot D:\cmd3r-cache -NvmWindows Yes -Npkill Yes
-Install.cmd -Offline -CacheRoot D:\cmd3r-cache -NvmWindows Yes -Npkill Yes
+Install.cmd
 ```
 
-The cache includes the NVM release manifest/EXE and npkill's npm dependency cache.
-Offline npkill uses npm's `--offline` mode and still needs an active Node runtime.
-Node runtime archives are separate from the NVM installer and are not staged by
-cmd3r. The web bootstrap itself needs internet; offline installation uses the clone.
+Or in PowerShell:
 
-Upstream: [NVM installers](https://docs.nvm-windows.com/install/installers/),
-[npkill](https://github.com/voidcosmos/npkill).
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
+```
 
-## Included
+`Install.cmd` launches the built-in Windows PowerShell with its own modules, so PowerShell 7 need not exist yet. Run it from Command Prompt or Windows PowerShell opened outside Windows Terminal when updating Terminal; open Terminal windows can delay its registration.
 
-- First, resolve the **latest stable** PowerShell and Windows Terminal releases.
-- Download and verify Microsoft's signed **PowerShell MSI** and **Windows Terminal
-  offline preinstall kit**, including Terminal's required runtime dependencies.
-- Install/update and verify both platform versions **before** other tools,
-  fonts, profiles, or Terminal settings are changed. Preview releases are excluded.
-- PowerShell 7 becomes the Windows Terminal default as **PowerShell (cmd3r)**.
-  Terminal's generated stable **PowerShell** entry also gets the theme and initial
-  font settings, with its explicit size/font choices preserved. Both point to the
-  installed stable executable. Preview and unrelated profiles remain separate.
-- Geist Mono Nerd Font Mono, size **10**, **light**, line height **1.4** as the
-  initial profile defaults. Existing and inherited font choices are preserved.
-  Change your font in Windows Terminal Settings > PowerShell > Appearance.
-  Built-in box-drawing strokes remain enabled; compact `+` markers use your text font.
-- Workspace light/dark colors and a framed Oh My Posh prompt with fine rules,
-  compact burgundy `+` intersections with small border gaps, an AM/PM clock, a simple `>` input marker, and a muted
-  red error badge.
-- UTF-8 console/native command encoding so the icons render correctly.
-- History suggestions appear as a list as you type; **F2** toggles inline/list.
-- Persistent history saves incrementally with up to **10,000** entries.
-- **Ctrl+R** fuzzy-searches history; **Alt+F** picks a file with a preview.
-- **Ctrl+Shift+B** copies the current Git branch name without changing your input.
-  Outside a repository or on detached HEAD, the clipboard is left unchanged.
-- `fzf`, `rg`, `fd`, `bat`, `zoxide`, `lazygit`, `jq`; existing Git is reused
-  or Git for Windows is installed when absent.
-- `z`, `zi`, `ff`, `cdf`, `gs`, `gl`, `gd`, `lg`, `ll`, `..`, and `...`.
+## Offline installation
 
-Type `terminal-help` or `cmd3r help` in the installed terminal for shortcuts.
+On a connected PC, stage downloads with the same CPU architecture as the target PC:
 
-Switch modes with `cmd3r theme light` or `cmd3r theme dark`. The choice is saved
-and reused on the next startup and on installer updates. This switches the prompt,
-Windows Terminal background and UI, PSReadLine colors, fzf, and bat previews.
-Other updated shell sessions follow the saved mode on their next prompt, keeping
-text colors in sync with the shared Terminal background. After upgrading cmd3r,
-open a new tab once to load the updated profile functions.
-Geist Mono Nerd Font Mono remains at size 10, light weight, and 1.4 line height.
-The divider adapts to window width and hides the right clock when space is
-tight. The directory path is an OSC 8 folder hyperlink (Ctrl+click in Windows
-Terminal). Labels such as WORKSPACE and GIT are omitted. Git shows the branch,
-compact working-tree counts (`+` added, `~` modified, `-` deleted, `?` untracked,
-`!` conflicted), a check-mark group for staged changes, an archive icon for stashes,
-ahead/behind counts, stashes, and active cherry-pick, merge, rebase, or revert.
-Counts are local status checks; no fetch or network request runs in the prompt.
-Large repositories can take longer to scan than the earlier branch-only prompt.
+```cmd
+Install.cmd -StageOnly -CacheRoot D:\cmd3r-cache -NvmWindows Yes -Npkill No
+```
 
-Apply just the theme to an existing cmd3r installation from this clone:
+Copy the source checkout and the complete cache to the target PC, then run:
+
+```cmd
+Install.cmd -Offline -CacheRoot D:\cmd3r-cache -NvmWindows Yes -Npkill No
+```
+
+Staging verifies the installers and archives without installing applications or changing Windows Terminal settings. Offline mode uses the cached release versions and refuses missing or invalid files. Git must already be installed offline. Prepare a separate cache for x64 and ARM64. For offline npkill, stage with `-Npkill Yes` on a PC with active Node/npm and include npm's cache. NVM's installer cache does not include Node.js runtime archives.
+
+## Troubleshooting and recovery
+
+The installer reports each step and saves detailed logs in `%LOCALAPPDATA%\cmd3r\downloads\logs`. It returns **0** on success, **1** on failure, and **2** when a Windows Terminal update is pending. If Terminal is open and registration is delayed, close every Terminal window and rerun from Command Prompt or Windows PowerShell. Verified downloads are reused.
+
+Before changing settings, setup saves backups under `%LOCALAPPDATA%\Programs\cmd3r\backups`. A failed run leaves completed changes in place; the log names the step to fix before rerunning. The doctor report is saved as `verification.log` in the download cache. Existing unrelated Terminal profiles and custom PowerShell profile content are preserved. Managed execution-policy restrictions may require an administrator.
+
+Your installation is under `%LOCALAPPDATA%\Programs\cmd3r`. To apply theme source changes without reinstalling applications:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\src\apply-theme.ps1 -Mode dark
 ```
 
-## Animated setup
+## Development and verification
 
-The installer shows eleven numbered steps with live spinner animation,
-completed-step markers, elapsed times, and clear failures. Animation runs while
-downloads, extraction, and installers are busy. It works before the Nerd Font is
-installed. Redirected output uses readable plain logs instead of terminal redraws.
-Use `-NoAnimation` to request the same plain output explicitly.
+The development repository is private; the [public installer repository](https://github.com/i-avi-nash/cmd3r-installer) contains a clean source snapshot without private commit history. **Publishing a new development commit does not update the public snapshot automatically.** Refresh the public snapshot before expecting `cmd3r update` or the one-line command to use a new change.
 
-PowerShell is installed via `msiexec` with no automatic reboot. Terminal is
-installed via `Add-AppxPackage` using the downloaded local bundle and dependencies,
-without a Store or winget download during deployment. Open Terminal tabs are never
-forcibly terminated: if Windows defers an update, setup stops before other tools
-or configuration. Close Terminal and rerun `Install.cmd` from Windows PowerShell.
+Customization lives in `src/preferences.json`, `src/scheme.json`, `src/scheme-light.json`, the two `src/workspace-*.omp.json` themes, and `src/profile.ps1`. Productivity tools and the font are pinned with SHA-256 hashes in `packages.lock.json`; stable PowerShell and Terminal release metadata is cached at install time. The PowerShell MSI's Microsoft signature and all downloaded archive hashes are checked.
 
-Expected pending updates display a yellow pause and recovery instructions, without
-a PowerShell stack trace. Setup returns exit code **2** when Terminal registration
-is pending, **1** for a failure, and **0** on success. Unexpected failures display
-the reason once; technical exception details are saved under the cache's `logs`
-directory. MSI and Terminal deployment also have their own logs in the cache.
-The final doctor check saves stdout, stderr, and its exit code to
-`verification.log` in the cache and includes the actual failed check in the error.
-Rerunning reuses verified downloads and completed installations. Setup is not a
-transaction: completed changes remain on a later failure, and configuration
-backups are retained rather than automatically rolled back. Cached offline mode
-fails clearly if a required download is missing or invalid.
-
-## Cached offline installation
-
-Run an online staging pass to download platform installers and all tool archives:
+Run checks from a source checkout after installing the test dependencies:
 
 ```powershell
-.\install.ps1 -StageOnly -CacheRoot C:\cmd3r-cache
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-Setup.ps1
+pwsh -NoProfile -File .\tests\Test-Themes.ps1
+pwsh -NoProfile -File .\tests\Test-GitPrompt.ps1
+pwsh -NoProfile -File .\tests\Test-CopyBranch.ps1
+pwsh -NoProfile -File .\tests\Test-OptionalTools.ps1
+pwsh -NoProfile -File .\tests\Test-InstallerHost.ps1
 ```
 
-Copy the repository and cache directory to the target PC, then run:
-
-```powershell
-.\install.ps1 -Offline -CacheRoot C:\cmd3r-cache
-```
-
-Offline mode uses the last resolved stable platform versions in that cache,
-validates the cached downloads, and makes no release/download requests. It cannot
-discover a newer release without an online staging pass. Git must already be
-installed in offline mode. A cache targets one CPU architecture; prepare separate
-x64/ARM64 platform caches when necessary.
-
-## Fast startup
-
-No downloads, package-manager commands, update checks, or executable init
-generators run in the PowerShell profile. Zoxide uses a generated local script.
-The small prompt function calls Oh My Posh only to render the prompt. Git
-shows its branch without scanning changed files. Search tools run on demand.
-PSReadLine handles its own history loading; the fuzzy-search file read happens
-only when you press Ctrl+R. Startup time depends on the PC and installed profiles.
-
-## Repeat runs and updates
-
-```powershell
-cmd3r doctor
-cmd3r update
-```
-
-`update` fetches the current `main` branch of the public installer snapshot, checks the
-latest stable PowerShell/Terminal releases, and reapplies the setup. The nine
-productivity/font packages still use pinned versions in `packages.lock.json`.
-Existing verified downloads are reused. Change the lock file's URL/version/SHA256
-to upgrade a productivity tool. Installed stable versions newer than an offline
-cache are retained; preview installations do not satisfy the stable requirement.
-Close programs using a tool if Windows reports a locked file.
-
-The installation lives in `%LOCALAPPDATA%\Programs\cmd3r`. Downloads are cached
-in `%LOCALAPPDATA%\cmd3r\downloads`. Backups are made under the installation's
-`backups` directory before editing existing files. The setup preserves other
-Windows Terminal profiles, actions, color schemes, and custom PowerShell profile
-content. It replaces only its managed profile block and its own Terminal profile,
-and applies the same appearance to the standard Windows PowerShell 5.1 profile.
-JSON comments are normalized when saving Terminal settings; the original file
-is retained in the backup. It adds its tool directories to the user PATH and
-sets CurrentUser execution policy to RemoteSigned only when required for local
-profiles. Managed execution-policy restrictions must be resolved by your admin.
-
-To customize, edit `src/preferences.json`, `src/scheme.json`,
-`src/scheme-light.json`, `src/workspace-dark.omp.json`,
-`src/workspace-light.omp.json`, or `src/profile.ps1`, commit/push, then run `cmd3r update`.
-The old Cmder installation in the original workspace is ignored by Git and is
-not needed by this setup.
-
-## Checks
-
-```powershell
-powershell.exe -NoProfile -File .\tests\Test-Setup.ps1
-.\install.ps1 -StageOnly -InstallRoot "$env:TEMP\cmd3r-test"
-```
-
-`StageOnly` downloads/verifies the offline platform installers, extracts the
-Terminal dependency kit and productivity archives, and prepares the local
-profile without installing platform applications or changing Windows Terminal
-settings, user profiles, fonts, execution policy, or user PATH. An optional GitHub Actions workflow is included
-as `tests/ci-workflow.yml.example`. Copy it to `.github/workflows/test.yml` to
-enable automatic compatibility checks and a fresh staging installation on a
-Windows runner (publishing workflows requires GitHub's `workflow` permission).
-
-Official productivity package sources are listed with SHA256 checksums in
-`packages.lock.json`. Platform release metadata and published SHA256 digests are
-resolved from Microsoft's GitHub repositories and saved in the cache as
-`platform-releases.json`. The PowerShell MSI's Microsoft signature is checked;
-Windows validates MSIX/AppX package signatures during Terminal deployment.
-Downloaded tools retain their upstream licenses in the extracted package folders.
+`-StageOnly` exercises the download and extraction path without applying system configuration. The example workflow in `tests/ci-workflow.yml.example` can be enabled in a repository with GitHub Actions.

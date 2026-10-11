@@ -169,7 +169,7 @@ function Invoke-Cmd3rVerification {
     $log = Join-Path $CacheRoot 'verification.log'
     # Escape trailing slashes before the closing quote for Windows argv parsing.
     $quotedRoot = '"' + ($InstallRoot -replace '(\\+)$','$1$1') + '"'
-    $arguments = '-NoLogo -NoProfile -File "{0}" -InstallRoot {1}' -f $DoctorPath,$quotedRoot
+    $arguments = '-NoLogo -NoProfile -ExecutionPolicy Bypass -File "{0}" -InstallRoot {1}' -f $DoctorPath,$quotedRoot
     $child = Start-Process -FilePath $PowerShellPath -ArgumentList $arguments -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -Wait -PassThru
     $output = Get-Content $stdout -Raw -ErrorAction SilentlyContinue
     $errors = Get-Content $stderr -Raw -ErrorAction SilentlyContinue
