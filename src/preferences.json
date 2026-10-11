@@ -1,0 +1,10 @@
+{
+  "profileGuid": "{528574d9-91f6-478a-87bf-0bd7c5d4bb52}",
+  "profileName": "PowerShell (cmd3r)",
+  "fontFace": "GeistMono NFM",
+  "fontSize": 10,
+  "fontWeight": "light",
+  "cellHeight": "1.4",
+  "padding": "12",
+  "colorScheme": "cmd3r Workspace Dark"
+}

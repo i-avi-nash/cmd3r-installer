@@ -1,0 +1,9 @@
+{
+  "name": "cmd3r Workspace Dark",
+  "background": "#111214", "foreground": "#F1F0ED",
+  "cursorColor": "#F1F0ED", "selectionBackground": "#343436",
+  "black": "#1C1D1F", "red": "#800020", "green": "#94B79E", "yellow": "#C8B786",
+  "blue": "#A0B8D0", "purple": "#B4A4C2", "cyan": "#96BEC0", "white": "#DEDDDA",
+  "brightBlack": "#B0AFAD", "brightRed": "#800020", "brightGreen": "#AACAB4", "brightYellow": "#DED0A1",
+  "brightBlue": "#B6CCE2", "brightPurple": "#CBB9DA", "brightCyan": "#ADD4D6", "brightWhite": "#F1F0ED"
+}

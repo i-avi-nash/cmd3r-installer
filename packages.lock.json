@@ -1,0 +1,83 @@
+[
+    {
+        "id":  "oh-my-posh",
+        "repository":  "JanDeDobbeleer/oh-my-posh",
+        "version":  "v31.7.0",
+        "url":  "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v31.7.0/posh-windows-amd64.exe",
+        "sha256":  "3a6da74bb631f6addac5087957ebfcf5cd92a874ca5a3a399d3b3b1e87a9f693",
+        "executable":  "oh-my-posh.exe",
+        "destination":  null
+    },
+    {
+        "id":  "fzf",
+        "repository":  "junegunn/fzf",
+        "version":  "v0.74.5",
+        "url":  "https://github.com/junegunn/fzf/releases/download/v0.74.5/fzf-0.74.5-windows_amd64.zip",
+        "sha256":  "01f854ec8b9b47c99a7d78023638f7d2056cfb0af56b72dabd112032eed3993e",
+        "executable":  "fzf.exe",
+        "destination":  null
+    },
+    {
+        "id":  "ripgrep",
+        "repository":  "BurntSushi/ripgrep",
+        "version":  "15.2.0",
+        "url":  "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-pc-windows-msvc.zip",
+        "sha256":  "71b2fef860abe467217a538ff31de02f5258807c0129f771846f87bd029aafc5",
+        "executable":  "rg.exe",
+        "destination":  null
+    },
+    {
+        "id":  "fd",
+        "repository":  "sharkdp/fd",
+        "version":  "v10.5.0",
+        "url":  "https://github.com/sharkdp/fd/releases/download/v10.5.0/fd-v10.5.0-x86_64-pc-windows-msvc.zip",
+        "sha256":  "a227701b8551c35a9931d9f6da75503cf86d88e182d71fb849a70864c5d57cd7",
+        "executable":  "fd.exe",
+        "destination":  null
+    },
+    {
+        "id":  "bat",
+        "repository":  "sharkdp/bat",
+        "version":  "v0.26.1",
+        "url":  "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_64-pc-windows-msvc.zip",
+        "sha256":  "0f729b4b6f5f28d395c641eacc2e9ff68d0096b85aa0eec344aa62425144b69b",
+        "executable":  "bat.exe",
+        "destination":  null
+    },
+    {
+        "id":  "zoxide",
+        "repository":  "ajeetdsouza/zoxide",
+        "version":  "v0.10.0",
+        "url":  "https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide-0.10.0-x86_64-pc-windows-msvc.zip",
+        "sha256":  "f465ae548f8754c8e7edbc60b45fbf58c92bfe123db83d790252d6810fa5daf1",
+        "executable":  "zoxide.exe",
+        "destination":  null
+    },
+    {
+        "id":  "lazygit",
+        "repository":  "jesseduffield/lazygit",
+        "version":  "v0.66.1",
+        "url":  "https://github.com/jesseduffield/lazygit/releases/download/v0.66.1/lazygit_0.66.1_windows_x86_64.zip",
+        "sha256":  "1a23fb8aed2e757085ca0b1c63dd2a26a76618c5159e68cf7dd375154838cb2c",
+        "executable":  "lazygit.exe",
+        "destination":  null
+    },
+    {
+        "id":  "jq",
+        "repository":  "jqlang/jq",
+        "version":  "jq-1.8.2",
+        "url":  "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-windows-amd64.exe",
+        "sha256":  "a6fc67fedaf9128a3309a1e2ebb8b986aeccf70122ee46d2cb4849e423f0c627",
+        "executable":  "jq.exe",
+        "destination":  null
+    },
+    {
+        "id":  "geist-font",
+        "repository":  "ryanoasis/nerd-fonts",
+        "version":  "v3.5.1",
+        "url":  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/GeistMono.zip",
+        "sha256":  "4799a6c340f3993cea7f59c256c723afb3e70233471ea9042d92f153b87ef83e",
+        "executable":  "",
+        "destination":  "fonts"
+    }
+]

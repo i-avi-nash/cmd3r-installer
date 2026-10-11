@@ -1,0 +1,30 @@
+name: Check setup
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Windows PowerShell compatibility and settings preservation
+        shell: powershell
+        run: .\tests\Test-Setup.ps1
+      - name: Test PowerShell 7
+        shell: pwsh
+        run: .\tests\Test-Setup.ps1
+      - name: Stage a fresh installation from official downloads
+        shell: powershell
+        run: .\install.ps1 -StageOnly -InstallRoot "$env:RUNNER_TEMP\cmd3r"
+      - name: Verify installed tools and profile
+        shell: pwsh
+        run: |
+          $root = "$env:RUNNER_TEMP\cmd3r"
+          pwsh -NoProfile -File .\src\doctor.ps1 -InstallRoot $root
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify light and dark themes and mode switching
+        shell: pwsh
+        run: .\tests\Test-Themes.ps1 -Posh "$env:RUNNER_TEMP\cmd3r\bin\oh-my-posh.exe"
+      - name: Verify Git change and operation details
+        shell: pwsh
+        run: .\tests\Test-GitPrompt.ps1 -Posh "$env:RUNNER_TEMP\cmd3r\bin\oh-my-posh.exe"

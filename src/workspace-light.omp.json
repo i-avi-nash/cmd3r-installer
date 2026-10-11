@@ -1,0 +1,160 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 4,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": false,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "<p:accent>+</>"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "filler": "<p:line>─</>",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "<p:accent>+</>──────────<p:accent>+</>"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "│ "
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "p:link",
+          "template": "<p:accent></> {{ path .Path .Location }} ",
+          "options": {
+            "style": "agnoster_short",
+            "max_depth": 3
+          }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "p:text",
+          "template": "<p:line> │ </><b>{{ .HEAD }}</b>{{ if .Working.Changed }} <p:line>·</> <p:accent>{{ trim .Working.String }}</>{{ end }}{{ if .Staging.Changed }} <p:line>·</> <p:staged>✓ {{ trim .Staging.String }}</>{{ end }}{{ if gt .Ahead 0 }} ↑{{ .Ahead }}{{ end }}{{ if gt .Behind 0 }} ↓{{ .Behind }}{{ end }}{{ if gt .StashCount 0 }} <p:line>·</> <p:muted> {{ .StashCount }}</>{{ end }}{{ if .CherryPick }} <p:accent>CHERRY-PICK</>{{ end }}{{ if .Merge }} <p:accent>MERGE</>{{ end }}{{ if .Rebase }} <p:accent>REBASE {{ .Rebase.Current }}/{{ .Rebase.Total }}</>{{ end }}{{ if .Revert }} <p:accent>REVERT</>{{ end }} ",
+          "options": {
+            "fetch_status": true,
+            "status_formats": {
+              "Added": "+%d ",
+              "Modified": "~%d ",
+              "Deleted": "-%d ",
+              "Untracked": "?%d ",
+              "Unmerged": "!%d "
+            },
+            "fetch_upstream_icon": false,
+            "resolve_rebase_target": false,
+            "branch_icon": " "
+          }
+        },
+        {
+          "type": "executiontime",
+          "style": "plain",
+          "foreground": "p:muted",
+          "template": "<p:line> │ </>{{ .FormattedMs }} ",
+          "options": {
+            "threshold": 1000,
+            "style": "austin"
+          }
+        },
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#FFFFFF",
+          "background": "p:badge",
+          "template": " EXIT {{ .Code }} ",
+          "options": {
+            "always_enabled": false
+          }
+        }
+      ],
+      "newline": true
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "overflow": "hide",
+      "filler": " ",
+      "segments": [
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "p:muted",
+          "template": "<p:line>│</> {{ .CurrentDate | date .Format }} <p:line>│</>",
+          "options": {
+            "time_format": "03:04 PM"
+          }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "<p:accent>+</>"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "filler": "<p:line>─</>",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "<p:accent>+</>──────────<p:accent>+</>"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:line",
+          "template": "<p:accent>></>"
+        }
+      ]
+    }
+  ],
+  "palette": {
+    "text": "#111214",
+    "muted": "#66676A",
+    "line": "#92908C",
+    "accent": "#800020",
+    "badge": "#800020",
+    "link": "#365F86",
+    "staged": "#356348"
+  }
+}

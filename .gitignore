@@ -1,0 +1,16 @@
+# Track only the installer sources; never publish the old Cmder installation,
+# downloaded binaries, command history, cached sessions, or personal backups.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/bootstrap.ps1
+!/install.ps1
+!/Install.cmd
+!/packages.lock.json
+!/src/
+!/tests/
+*.omp.cache
+*.log
+*.tmp
+/tests/.work/

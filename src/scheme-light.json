@@ -1,0 +1,23 @@
+{
+  "name": "cmd3r Workspace Light",
+  "background": "#F1F0ED",
+  "foreground": "#111214",
+  "cursorColor": "#800020",
+  "selectionBackground": "#DDDAD5",
+  "black": "#111214",
+  "red": "#800020",
+  "green": "#356348",
+  "yellow": "#806024",
+  "blue": "#365F86",
+  "purple": "#71567F",
+  "cyan": "#306C70",
+  "white": "#424347",
+  "brightBlack": "#66676A",
+  "brightRed": "#800020",
+  "brightGreen": "#417553",
+  "brightYellow": "#916D25",
+  "brightBlue": "#426E95",
+  "brightPurple": "#826392",
+  "brightCyan": "#377A7F",
+  "brightWhite": "#111214"
+}
