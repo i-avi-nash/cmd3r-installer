@@ -56,6 +56,13 @@ Assert ($first -eq $second) 'Profile update is not idempotent'
 Assert ($second.Contains("`$env:MY_SETTING = 'yes'")) 'Existing profile content was lost'
 Assert ($second.Contains("O''Brien")) 'Apostrophe in the profile path was not escaped'
 Assert (!$second.Contains('C:\old\')) 'Old managed profile block survived'
+$allHosts = "`$env:KEEP_THIS = 'yes'`r`n# BEGIN CMD3R`r`n. 'C:\old\profile.ps1'`r`n# END CMD3R`r`n"
+$cleanAllHosts = Remove-Cmd3rProfileBlock $allHosts
+Assert ($cleanAllHosts.Contains("`$env:KEEP_THIS = 'yes'") -and !$cleanAllHosts.Contains('BEGIN CMD3R')) 'Migrating from AllHosts lost custom content or kept the old loader'
+$currentHost = "oh-my-posh init pwsh --config 'old-theme.json' | Invoke-Expression`r`nfunction prompt { 'old' }`r`n"
+$mergedHost = Merge-ProfileContent $currentHost 'C:\cmd3r\config\profile.ps1'
+Assert ($mergedHost.IndexOf('old-theme.json') -lt $mergedHost.IndexOf('# BEGIN CMD3R')) 'Existing Oh My Posh initialization would override cmd3r'
+Assert ($mergedHost -match '(?s)# BEGIN CMD3R\r?\n.*?# END CMD3R\s*$') 'cmd3r loader is not the final console profile block'
 $packages = Get-Content (Join-Path $root 'packages.lock.json') -Raw | ConvertFrom-Json
 Assert ($packages.Count -eq 9) 'Expected nine pinned productivity/font packages (platform installers are resolved dynamically)'
 foreach ($package in $packages) {

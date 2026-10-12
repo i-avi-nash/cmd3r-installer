@@ -16,6 +16,8 @@ Setup first downloads and verifies the latest stable PowerShell MSI and Windows 
 
 Open a new Windows Terminal tab after setup. The default entry is **PowerShell (cmd3r)**, using the installed PowerShell 7. The generated **PowerShell** entry also points to that executable and receives the theme. Your existing explicit font choices are preserved.
 
+If you already use Oh My Posh, setup keeps your profile content and puts the cmd3r loader last in the console profile, so the cmd3r layout appears in new PowerShell tabs. It removes only a cmd3r loader left in the older all-hosts profile. An already-open tab keeps its current prompt until you open a new tab.
+
 ## What you get
 
 | Area | Behavior |

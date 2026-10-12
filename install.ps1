@@ -199,15 +199,32 @@ $messageResult = [IntPtr]::Zero
 [Cmd3r.Native]::SendMessageTimeout([IntPtr]0xffff,0x001d,[IntPtr]::Zero,$null,2,1000,[ref]$messageResult) | Out-Null
 Stop-Cmd3rStep
 Start-Cmd3rStep 'Configure PowerShell profiles and saved history'
-$pwshProfile = (& $pwshExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserAllHosts') -join ''
+$pwshProfile = (& $pwshExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserCurrentHost') -join ''
 if ($LASTEXITCODE -ne 0 -or !$pwshProfile) { throw 'Could not resolve PowerShell user profile' }
+$pwshAllHostsProfile = (& $pwshExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserAllHosts') -join ''
+if ($LASTEXITCODE -ne 0 -or !$pwshAllHostsProfile) { throw 'Could not resolve PowerShell all-hosts profile' }
 $windowsExe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$legacyProfile = (& $windowsExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserAllHosts') -join ''
+$legacyProfile = (& $windowsExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserCurrentHost') -join ''
+$legacyAllHostsProfile = (& $windowsExe -NoLogo -NoProfile -Command '$PROFILE.CurrentUserAllHosts') -join ''
+if ($LASTEXITCODE -ne 0 -or !$legacyProfile -or !$legacyAllHostsProfile) { throw 'Could not resolve Windows PowerShell user profiles' }
+# CurrentHost loads last, after an existing Oh My Posh initialization.
 foreach ($profilePath in @($pwshProfile,$legacyProfile) | Select-Object -Unique) {
     $existing = ''
     if (Test-Path $profilePath) { $existing = Get-Content $profilePath -Raw; if ($null -eq $existing) { $existing = '' } }
     Backup-ExistingFile $profilePath $backup
     Write-Utf8File -Path $profilePath -Text (Merge-ProfileContent $existing (Join-Path $config 'profile.ps1')) -Bom
+}
+# Older cmd3r releases loaded from AllHosts. Remove only that managed block.
+foreach ($profilePath in @($pwshAllHostsProfile,$legacyAllHostsProfile) | Select-Object -Unique) {
+    if (Test-Path -LiteralPath $profilePath) {
+        $existing = Get-Content -LiteralPath $profilePath -Raw
+        if ($null -eq $existing) { $existing = '' }
+        $clean = Remove-Cmd3rProfileBlock $existing
+        if ($clean -cne $existing) {
+            Backup-ExistingFile $profilePath $backup
+            Write-Utf8File -Path $profilePath -Text $clean -Bom
+        }
+    }
 }
 # Only adjust the user's execution policy if it currently prevents local profiles.
 $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser

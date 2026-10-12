@@ -37,6 +37,12 @@ if ($jsonVersion -ne '4') { throw 'JSON filtering failed' }
 if ($LASTEXITCODE -ne 0) { throw 'File viewing failed' }
 if (Test-Path (Join-Path $InstallRoot 'installation.json')) {
     $installation = Get-Content (Join-Path $InstallRoot 'installation.json') -Raw | ConvertFrom-Json
+    foreach ($profilePath in @($installation.powerShellProfile,$installation.legacyProfile) | Select-Object -Unique) {
+        $profileText = Get-Content -LiteralPath $profilePath -Raw -ErrorAction Stop
+        if ($profileText -notmatch '(?s)# BEGIN CMD3R\r?\n.*?# END CMD3R\s*$') {
+            throw "cmd3r is not the last block in the console profile: $profilePath"
+        }
+    }
     . (Join-Path $InstallRoot 'setup\src\setup-lib.ps1')
     $settings = ConvertFrom-Jsonc (Get-Content $installation.settings -Raw)
     $default = $settings.profiles.list | Where-Object guid -eq $settings.defaultProfile

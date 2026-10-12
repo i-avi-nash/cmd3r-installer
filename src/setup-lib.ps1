@@ -111,9 +111,14 @@ function Merge-TerminalSettings {
     return $Settings
 }
 
+function Remove-Cmd3rProfileBlock {
+    param([AllowEmptyString()][string]$Existing)
+    return $Existing -replace '(?ms)\r?\n?# BEGIN (?:TERMINALTOOLS|CMD3R)\r?\n.*?# END (?:TERMINALTOOLS|CMD3R)\r?\n?', ''
+}
+
 function Merge-ProfileContent {
     param([AllowEmptyString()][string]$Existing, [string]$SharedProfile)
-    $clean = $Existing -replace '(?ms)\r?\n?# BEGIN (?:TERMINALTOOLS|CMD3R)\r?\n.*?# END (?:TERMINALTOOLS|CMD3R)\r?\n?', ''
+    $clean = Remove-Cmd3rProfileBlock $Existing
     $source = ". '$($SharedProfile.Replace("'", "''"))'"
     return $clean.TrimEnd() + "`r`n# BEGIN CMD3R`r`n$source`r`n# END CMD3R`r`n"
 }
